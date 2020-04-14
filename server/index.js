@@ -4,7 +4,7 @@ const morgan = require("morgan");
 const passport = require("passport");
 const app = express();
 const session = require("express-session");
-const db = require("./db");
+const db = require("./db/db");
 const authRouter = require('./routes/router')
 //creating a store for sessions
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
