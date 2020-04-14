@@ -12,9 +12,9 @@ const gotPost = post => {
 export const getPost = (postId) => {
     return async function(dispatch) {
         try {
-            const { data } = await axios.get('/api/posts/:id')
+            const { data } = await axios.get(`/api/posts/${postId}`)
 
-            dispatch(gotPosts(data))
+            dispatch(gotPost(data))
         } catch (error) {
             console.log(error);
         }

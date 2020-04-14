@@ -1,0 +1,84 @@
+ /* {
+    display: flex;
+    flex-direction: column;
+} */
+* {
+    box-sizing: border-box;
+    font-family: 'Share Tech', sans-serif;;
+}
+
+.cover {
+    height: 600px;
+    background-color: salmon;
+}
+
+.top-bar {
+    height: 70px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.mini-bar {
+    height: 70;
+    width: 100%;
+    display: flex;
+    background-color: seagreen;
+    margin-bottom: 40px;
+}
+
+.footer {
+    display: flex;
+    height: 120px;
+    width: 100%;
+    background-color: hotpink;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  gap: 3rem;
+  padding-left: 15em;
+  padding-right: 15em;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #b4b4b4;
+  font-size: 1rem;
+  color: black;
+  box-shadow: rgba(3, 8, 20, 0.1) 0px 0.15rem 0.5rem,
+    rgba(2, 8, 20, 0.1) 0px 0.075rem 0.175rem;
+  height: 480px;
+  width: 100%;
+  border-radius: 4px;
+  transition: all 500ms;
+  overflow: hidden;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card:hover {
+  box-shadow: rgba(2, 8, 20, 0.1) 0px 0.35em 1.175em,
+    rgba(2, 8, 20, 0.08) 0px 0.175em 0.5em;
+  transform: translateY(-3px) scale(1.025);
+}
+
+.post {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 120px;
+}
+
+.post-content {
+    display: flex;
+    flex-direction: column;
+    width: 60em;
+}

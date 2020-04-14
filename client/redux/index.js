@@ -3,7 +3,7 @@ import postsReducer from './posts'
 import singlePostReducer from './singlePost'
 
 const appReducer = combineReducers({
-    posts: postReducer,
+    posts: postsReducer,
     singlePost: singlePostReducer,
 })
 

@@ -13,7 +13,7 @@ export const getPosts = () => {
     return async function(dispatch) {
         try {
             const { data } = await axios.get('/api/posts')
-
+            console.log('gettng')
             dispatch(gotPosts(data))
         } catch (error) {
             console.log(error);
