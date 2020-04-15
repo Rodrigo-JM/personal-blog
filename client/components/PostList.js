@@ -23,7 +23,7 @@ export class PostList extends Component {
                 {
                     this.props.posts.map(post => {
                         return (
-                            <div className="card" onClick={() => this.handlePostClick(post.id)}>
+                            <div key={post.id} className="card" onClick={() => this.handlePostClick(post.id)}>
                                 <img src={post.imageUrl} />
                                 <h1>{post.title}</h1>
                                 <h5>{post.subtitle}</h5>

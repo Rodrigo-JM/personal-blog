@@ -82,3 +82,32 @@
     flex-direction: column;
     width: 60em;
 }
+
+.form-div {
+  display: flex;
+  justify-content: center;
+  height: 1000px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 60em; 
+}
+
+.form > textarea {
+  height: 40px;
+  border: 0px;
+  resize: none; 
+  font-size: 24px;
+  margin-bottom: 10px;
+  
+}
+
+.form > textarea:focus{
+  outline:none;
+}
+/* 
+.form > textarea[name="content"] {
+  height: 300px;
+} */

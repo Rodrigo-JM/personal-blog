@@ -20,7 +20,7 @@ export class SinglePost extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    post: state.singlePost,
+    post: state.post,
   };
 };
 

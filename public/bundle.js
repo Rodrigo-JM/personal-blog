@@ -212,16 +212,126 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 
 
-const MiniBar = () => {
+const MiniBar = props => {
+  console.log(props);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "mini-bar"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "MiniBar PlaceHolder"));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "MiniBar PlaceHolder"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    onClick: () => props.history.push(`blog/new`)
+  }, "New"));
 };
 
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {};
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps, mapDispatchToProps)(MiniBar));
+
+/***/ }),
+
+/***/ "./client/components/PostForm.js":
+/*!***************************************!*\
+  !*** ./client/components/PostForm.js ***!
+  \***************************************/
+/*! exports provided: PostForm, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PostForm", function() { return PostForm; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _redux_singlePost__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../redux/singlePost */ "./client/redux/singlePost.js");
+
+
+
+class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
+  constructor() {
+    super();
+    this.state = {
+      model: {}
+    };
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+
+    if (this.props.location.pathname.match("new")) {
+      if (this.props.location.pathname.match("projects")) {
+        this.setState({
+          model: this.props.project
+        });
+      } else if (this.props.location.pathname.match("bio")) {
+        this.setState({
+          model: this.props.bio
+        });
+      } else if (this.props.location.pathname.match("blog")) {
+        this.props.newPost(this.state.model);
+      }
+    }
+  }
+
+  handleChange(event) {
+    this.setState({
+      model: { ...this.state.model,
+        [event.target.name]: event.target.value
+      }
+    });
+    event.target.style.height = '1px';
+    event.target.style.height = event.target.scrollHeight + 5 + "px";
+  }
+
+  componentDidMount() {
+    if (this.props.location.pathname.match("projects")) {
+      this.setState({
+        model: this.props.project
+      });
+    } else if (this.props.location.pathname.match("bio")) {
+      this.setState({
+        model: this.props.bio
+      });
+    } else if (this.props.location.pathname.match("blog")) {
+      this.setState({
+        model: this.props.post
+      });
+    }
+  }
+
+  render() {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      className: "form-div"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+      className: "form",
+      onSubmit: this.handleSubmit
+    }, Object.keys(this.state.model).filter(key => key !== "id" && key !== "createdAt" && key !== "updatedAt").map((field, index) => {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
+        key: index,
+        name: field,
+        placeholder: field,
+        value: this.state.model[field] && this.state.model[field],
+        onChange: this.handleChange
+      });
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      type: "submit"
+    }, "Submit")));
+  }
+
+}
+
+const mapStateToProps = state => {
+  return { ...state
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    newPost: post => dispatch(Object(_redux_singlePost__WEBPACK_IMPORTED_MODULE_2__["newPost"])(post))
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(mapStateToProps, mapDispatchToProps)(PostForm));
 
 /***/ }),
 
@@ -261,6 +371,7 @@ class PostList extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       className: "posts-grid"
     }, this.props.posts.map(post => {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        key: post.id,
         className: "card",
         onClick: () => this.handlePostClick(post.id)
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
@@ -305,6 +416,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Cover__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Cover */ "./client/components/Cover.js");
 /* harmony import */ var _MiniBar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./MiniBar */ "./client/components/MiniBar.js");
 /* harmony import */ var _Footer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Footer */ "./client/components/Footer.js");
+/* harmony import */ var _PostForm__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./PostForm */ "./client/components/PostForm.js");
+
 
 
 
@@ -320,19 +433,24 @@ const Routes = () => {
     component: _TopBar__WEBPACK_IMPORTED_MODULE_3__["default"]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     exact: true,
-    path: "/",
+    path: "/blog",
     component: _Cover__WEBPACK_IMPORTED_MODULE_5__["default"]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     exact: true,
-    path: "/",
+    path: "/blog",
     component: _MiniBar__WEBPACK_IMPORTED_MODULE_6__["default"]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Switch"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     exact: true,
-    path: "/",
+    path: "/blog",
     component: _PostList__WEBPACK_IMPORTED_MODULE_2__["default"]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     path: "/posts/:postId",
     component: _SinglePost__WEBPACK_IMPORTED_MODULE_4__["default"]
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
+    path: "/blog/new",
+    component: _PostForm__WEBPACK_IMPORTED_MODULE_8__["default"]
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Redirect"], {
+    to: "/blog"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
     path: "/",
     component: _Footer__WEBPACK_IMPORTED_MODULE_7__["default"]
@@ -377,7 +495,7 @@ class SinglePost extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
 const mapStateToProps = state => {
   return {
-    post: state.singlePost
+    post: state.post
   };
 };
 
@@ -469,7 +587,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const appReducer = Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"])({
   posts: _posts__WEBPACK_IMPORTED_MODULE_1__["default"],
-  singlePost: _singlePost__WEBPACK_IMPORTED_MODULE_2__["default"]
+  post: _singlePost__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
 /* harmony default export */ __webpack_exports__["default"] = (appReducer);
 
@@ -529,16 +647,24 @@ const postsReducer = (state = [], action) => {
 /*!************************************!*\
   !*** ./client/redux/singlePost.js ***!
   \************************************/
-/*! exports provided: getPost, default */
+/*! exports provided: newPost, getPost, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "newPost", function() { return newPost; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPost", function() { return getPost; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 const GOT_POST = "GOT_POST";
+const CREATED_NEW_POST = 'CREATED_NEW_POST';
+const postTemplate = {
+  title: '',
+  subject: '',
+  content: '',
+  imageUrl: ''
+};
 
 const gotPost = post => {
   return {
@@ -547,6 +673,25 @@ const gotPost = post => {
   };
 };
 
+const createdNewPost = post => {
+  return {
+    type: CREATED_NEW_POST,
+    post
+  };
+};
+
+const newPost = post => {
+  return async function (dispatch) {
+    try {
+      const {
+        data
+      } = await axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(`/api/posts`, post);
+      dispatch(createdNewPost(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 const getPost = postId => {
   return async function (dispatch) {
     try {
@@ -560,8 +705,11 @@ const getPost = postId => {
   };
 };
 
-const postReducer = (state = {}, action) => {
+const postReducer = (state = postTemplate, action) => {
   switch (action.type) {
+    case CREATED_NEW_POST:
+      return postTemplate;
+
     case GOT_POST:
       return action.post;
 

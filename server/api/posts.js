@@ -20,7 +20,6 @@ router.get("/:postId", async (req, res, next) => {
     } else {
       res.status(200).send(post);
     }
-    res.status(200).send(posts);
   } catch (err) {
     next(err);
   }
@@ -28,6 +27,7 @@ router.get("/:postId", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
+    console.log(req.body)
     const post = await Post.create(req.body);
 
     if (post === null) {

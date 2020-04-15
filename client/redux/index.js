@@ -4,7 +4,7 @@ import singlePostReducer from './singlePost'
 
 const appReducer = combineReducers({
     posts: postsReducer,
-    singlePost: singlePostReducer,
+    post: singlePostReducer,
 })
 
 export default appReducer
