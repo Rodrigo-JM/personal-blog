@@ -61,7 +61,7 @@ router.delete("/:projectId", async (req, res, next) => {
     if (project === null) {
       res.sendStatus(404);
     } else {
-      await project.delete();
+      await project.destroy();
       res.status(200).send(project);
     }
   } catch (err) {

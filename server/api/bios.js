@@ -61,7 +61,7 @@ router.delete("/:bioId", async (req, res, next) => {
     if (bio === null) {
       res.sendStatus(404);
     } else {
-      await bio.delete();
+      await bio.destroy();
       res.status(200).send(bio);
     }
   } catch (err) {

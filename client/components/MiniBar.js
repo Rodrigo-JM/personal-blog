@@ -6,7 +6,7 @@ export const MiniBar = (props) => {
     return (
         <div className="mini-bar">
             <h2>MiniBar PlaceHolder</h2>
-            <button onClick={() => props.history.push(`blog/new`)} >New</button>
+            <button onClick={() => props.history.push(`blog/posts/new`)} >New</button>
         </div>
     )
 }

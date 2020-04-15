@@ -16,8 +16,9 @@ const Routes = () => {
       <Route exact path="/blog" component={MiniBar} />
       <Switch>
         <Route exact path="/blog" component={PostList} />
-        <Route path="/posts/:postId" component={SinglePost} />
-        <Route path="/blog/new" component={PostForm} />
+        <Route path="/blog/posts/:postId/edit" component={PostForm} />
+        <Route path="/blog/posts/new" component={PostForm} />
+        <Route exact path="/blog/posts/:postId" component={SinglePost} />
         <Redirect to="/blog" />
       </Switch>
       <Route path="/" component={Footer} />

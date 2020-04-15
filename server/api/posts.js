@@ -62,7 +62,7 @@ router.delete("/:postId", async (req, res, next) => {
     if (post === null) {
       res.sendStatus(404);
     } else {
-      await post.delete();
+      await post.destroy();
       res.status(200).send(post);
     }
   } catch (err) {

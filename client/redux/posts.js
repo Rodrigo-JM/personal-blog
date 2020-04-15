@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const GOT_POSTS = "GOT_POSTS"
-
+const DELETED_POST = "DELETED_POST"
 const gotPosts = posts => {
     return {
         type: GOT_POSTS,
@@ -24,6 +24,8 @@ export const getPosts = () => {
 
 const postsReducer = (state = [], action) => {
     switch (action.type) {
+        case DELETED_POST:
+            return state.filter(post => post.id !== action.postId)
         case GOT_POSTS: 
             return action.posts
         default:

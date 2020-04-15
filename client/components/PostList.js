@@ -14,7 +14,7 @@ export class PostList extends Component {
     }
 
     handlePostClick(postId) {
-        this.props.history.push(`/posts/${postId}`)
+        this.props.history.push(`/blog/posts/${postId}`)
     }
 
     render() {

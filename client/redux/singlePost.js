@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const GOT_POST = "GOT_POST"
 const CREATED_NEW_POST = 'CREATED_NEW_POST'
-
+const DELETED_POST = "DELETED_POST"
 const postTemplate = {title: '', subject: '', content: '', imageUrl: ''}
 
 const gotPost = post => {
@@ -11,11 +11,30 @@ const gotPost = post => {
         post
     }
 }
+const deletedPost = (postId) => {
+    return {
+        type: DELETED_POST,
+        postId
+    }
+}
+
 
 const createdNewPost = post => {
     return {
         type: CREATED_NEW_POST,
         post
+    }
+}
+
+export const deletePost = (postId) => {
+    return async function(dispatch) {
+        try {
+            const {data} = await axios.delete(`/api/posts/${postId}`)
+
+            dispatch(deletedPost(postId))
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
 
@@ -30,6 +49,18 @@ export const newPost = (post) => {
         }
 
     } 
+}
+
+export const editPost = (post) => {
+    return async function(dispatch) {
+        try {
+            const { data } = await axios.put(`/api/posts/${post.id}`, post)
+
+            dispatch(gotPost(post))
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 export const getPost = (postId) => {
@@ -47,8 +78,10 @@ export const getPost = (postId) => {
 
 const postReducer = (state = postTemplate, action) => {
     switch (action.type) {
-        case CREATED_NEW_POST: 
+        case DELETED_POST:
             return postTemplate
+        case CREATED_NEW_POST: 
+            return action.post
         case GOT_POST: 
             return action.post
         default:
