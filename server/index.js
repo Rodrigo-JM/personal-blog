@@ -9,7 +9,7 @@ const authRouter = require('./routes/router')
 //creating a store for sessions
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const dbStore = new SequelizeStore({ db: db });
-
+const fileUpload = require('express-fileupload')
 // sync so that our session table gets created
 dbStore.sync();
 
@@ -52,9 +52,10 @@ app.use(express.urlencoded({ extended: true }));
 // static middleware
 app.use(express.static(path.join(__dirname, "../public")));
 
+app.use(fileUpload())
+
 //request api router
 app.use("/api", require("./api/index"));
-
 //router for user auth actions
 app.use("/login", authRouter)
 app.use("/signup", authRouter)

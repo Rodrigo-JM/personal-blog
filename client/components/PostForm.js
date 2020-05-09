@@ -2,17 +2,20 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import {newPost, editPost} from '../redux/singlePost'
 import SimpleMDE from 'simplemde'
+import axios from "axios";
 
 export class PostForm extends Component {
   constructor() {
     super();
     this.state = {
       model: {},
-      wasSubmitted: false
+      wasSubmitted: false,
+      fileContent: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.goToResource = this.goToResource.bind(this)
+    this.addFile = this.addFile.bind(this)
   }
 
   goToResource() {
@@ -27,13 +30,18 @@ export class PostForm extends Component {
   handleSubmit(event) {
       event.preventDefault();
 
+      let newModel = {...this.state.model}
+
+      newModel.content = this.state.fileContent;
+
+
       if (this.props.location.pathname.match("new")) {
         if (this.props.location.pathname.match("projects")) {
             this.setState({ model: this.props.project });
           } else if (this.props.location.pathname.match("bio")) {
             this.setState({ model: this.props.bio });
           } else if (this.props.location.pathname.match("blog")) {
-            this.props.newPost(this.state.model)
+            this.props.newPost(newModel)
           } 
       } else if (this.props.location.pathname.match("edit")) {
         if (this.props.location.pathname.match("projects")) {
@@ -41,7 +49,7 @@ export class PostForm extends Component {
           } else if (this.props.location.pathname.match("bio")) {
             this.setState({ model: this.props.bio });
           } else if (this.props.location.pathname.match("blog")) {
-            this.props.editPost(this.state.model)
+            this.props.editPost(newModel)
           }  
       }
 
@@ -56,8 +64,8 @@ export class PostForm extends Component {
           }
       })
 
-      event.target.style.height = '1px'
-      event.target.style.height = (event.target.scrollHeight + 5)+"px" 
+      // event.target.style.height = '1px'
+      // event.target.style.height = (event.target.scrollHeight + 5)+"px" 
       
   }
 
@@ -71,33 +79,53 @@ export class PostForm extends Component {
             this.setState({ model: this.props.post });
           } 
       } else if (this.props.location.pathname.match("edit")) {
+
         if (this.props.location.pathname.match("projects")) {
-            this.setState({ model: this.props.project });
+            this.setState({ model: this.props.project, fileContent: this.props.project.content });
           } else if (this.props.location.pathname.match("bio")) {
-            this.setState({ model: this.props.bio });
+            this.setState({ model: this.props.bio, fileContent: this.props.bio.content });
           } else if (this.props.location.pathname.match("blog")) {
-            this.setState({ model: this.props.post });
+            this.setState({ model: this.props.post, fileContent: this.props.post.content });
           }
         }
   }
 
-  componentDidUpdate() {
-    if (!document.getElementsByClassName("CodeMirror").length) {
-        const script = document.createElement('script');
-        script.id = "editor"
-        script.innerHTML = `var simplemde = new SimpleMDE({element: document.getElementById("content"), inputStyle: "textarea"})`
-        document.body.appendChild(script)
-        const [editor] = document.getElementsByClassName("CodeMirror cm-s-paper CodeMirror-wrap")
-        editor.addEventListener('keyup', this.handleChange)
+  async addFile(e) {
+    e.preventDefault()
+    console.log(e.target.file)
+    const formData = new FormData();
+
+    formData.append('file', e.target.file.files[0]);
+
+    try {
+      const {data} = await axios.post('/api/uploads/posts/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }})
+
+        this.setState({fileContent: data.filePath})
+    } catch (error) {
+        console.log(error)
     }
-
   }
 
-  componentWillUnmount() {
-    const editor = document.getElementById("editor")
-    // deleteObject(simplemde)    
-    editor.parentNode.removeChild(editor)
-  }
+  // componentDidUpdate() {
+    // if (!document.getElementsByClassName("CodeMirror").length) {
+    //     const script = document.createEl, formData, {
+    //     script.id = "editor"
+    //     script.innerHTML = `var simplemde = new SimpleMDE({element: document.getElementById("content"), inputStyle: "textarea"})`
+    //     document.body.appendChild(script)
+    //     const [editor] = document.getElementsByClassName("CodeMirror cm-s-paper CodeMirror-wrap")
+    //     editor.addEventListener('keyup', this.handleChange)
+    // }
+
+  // }
+
+  // componentWillUnmount() {
+  //   const editor = document.getElementById("editor")
+  //   // deleteObject(simplemde)    
+  //   editor.parentNode.removeChild(editor)
+  // }
 
   render() {
     return (
@@ -110,7 +138,7 @@ export class PostForm extends Component {
                 key !== "id" && key !== "createdAt" && key !== "updatedAt"
             )
             .map((field, index) => {
-              return (
+              return field !== "content" && (
                 <textarea
                   id={(field === 'content') ? 'content' : ''}
                   key={index}
@@ -122,6 +150,11 @@ export class PostForm extends Component {
               );
             })}
             <button type="submit">Submit</button>
+        </form>
+        <form onSubmit={this.addFile}>
+          <label>Content File:</label>
+          <input type="file" name="file" id="customFile"/>
+          <button type="submit">Add File</button>
         </form>
       </div>
     );
@@ -137,7 +170,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
     return {
         newPost: (post) => dispatch(newPost(post)),
-        editPost: (post) => dispatch(editPost(post))
+        editPost: (post) => dispatch(editPost(post)),
+        
     }
 }
 

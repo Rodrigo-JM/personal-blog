@@ -38,6 +38,20 @@ export const deletePost = (postId) => {
     }
 }
 
+// export const addFile = (file) => {
+//     return async function(dispatch) {
+//         try {
+//             const { data } = await axios.post('/api/uploads/post', file, {
+//                 headers: 'content'
+//             })
+
+//             dispatch(addedFile(data))
+//         } catch (error) {
+//             console.log(error)
+//         }
+//     }
+// }
+
 export const newPost = (post) => {
     return async function(dispatch) {
         try {

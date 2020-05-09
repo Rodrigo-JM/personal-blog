@@ -244,6 +244,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _redux_singlePost__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../redux/singlePost */ "./client/redux/singlePost.js");
 /* harmony import */ var simplemde__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! simplemde */ "./node_modules/simplemde/src/js/simplemde.js");
 /* harmony import */ var simplemde__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(simplemde__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -253,11 +256,13 @@ class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     super();
     this.state = {
       model: {},
-      wasSubmitted: false
+      wasSubmitted: false,
+      fileContent: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.goToResource = this.goToResource.bind(this);
+    this.addFile = this.addFile.bind(this);
   }
 
   goToResource() {
@@ -272,6 +277,9 @@ class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
 
   handleSubmit(event) {
     event.preventDefault();
+    let newModel = { ...this.state.model
+    };
+    newModel.content = this.state.fileContent;
 
     if (this.props.location.pathname.match("new")) {
       if (this.props.location.pathname.match("projects")) {
@@ -283,7 +291,7 @@ class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           model: this.props.bio
         });
       } else if (this.props.location.pathname.match("blog")) {
-        this.props.newPost(this.state.model);
+        this.props.newPost(newModel);
       }
     } else if (this.props.location.pathname.match("edit")) {
       if (this.props.location.pathname.match("projects")) {
@@ -295,7 +303,7 @@ class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
           model: this.props.bio
         });
       } else if (this.props.location.pathname.match("blog")) {
-        this.props.editPost(this.state.model);
+        this.props.editPost(newModel);
       }
     }
 
@@ -309,9 +317,8 @@ class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       model: { ...this.state.model,
         [event.target.name ? event.target.name : "content"]: event.target.value
       }
-    });
-    event.target.style.height = '1px';
-    event.target.style.height = event.target.scrollHeight + 5 + "px";
+    }); // event.target.style.height = '1px'
+    // event.target.style.height = (event.target.scrollHeight + 5)+"px" 
   }
 
   componentDidMount() {
@@ -332,36 +339,59 @@ class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
     } else if (this.props.location.pathname.match("edit")) {
       if (this.props.location.pathname.match("projects")) {
         this.setState({
-          model: this.props.project
+          model: this.props.project,
+          fileContent: this.props.project.content
         });
       } else if (this.props.location.pathname.match("bio")) {
         this.setState({
-          model: this.props.bio
+          model: this.props.bio,
+          fileContent: this.props.bio.content
         });
       } else if (this.props.location.pathname.match("blog")) {
         this.setState({
-          model: this.props.post
+          model: this.props.post,
+          fileContent: this.props.post.content
         });
       }
     }
   }
 
-  componentDidUpdate() {
-    if (!document.getElementsByClassName("CodeMirror").length) {
-      const script = document.createElement('script');
-      script.id = "editor";
-      script.innerHTML = `var simplemde = new SimpleMDE({element: document.getElementById("content"), inputStyle: "textarea"})`;
-      document.body.appendChild(script);
-      const [editor] = document.getElementsByClassName("CodeMirror cm-s-paper CodeMirror-wrap");
-      editor.addEventListener('keyup', this.handleChange);
+  async addFile(e) {
+    e.preventDefault();
+    console.log(e.target.file);
+    const formData = new FormData();
+    formData.append('file', e.target.file.files[0]);
+
+    try {
+      const {
+        data
+      } = await axios__WEBPACK_IMPORTED_MODULE_4___default.a.post('/api/uploads/posts/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      this.setState({
+        fileContent: data.filePath
+      });
+    } catch (error) {
+      console.log(error);
     }
-  }
+  } // componentDidUpdate() {
+  // if (!document.getElementsByClassName("CodeMirror").length) {
+  //     const script = document.createEl, formData, {
+  //     script.id = "editor"
+  //     script.innerHTML = `var simplemde = new SimpleMDE({element: document.getElementById("content"), inputStyle: "textarea"})`
+  //     document.body.appendChild(script)
+  //     const [editor] = document.getElementsByClassName("CodeMirror cm-s-paper CodeMirror-wrap")
+  //     editor.addEventListener('keyup', this.handleChange)
+  // }
+  // }
+  // componentWillUnmount() {
+  //   const editor = document.getElementById("editor")
+  //   // deleteObject(simplemde)    
+  //   editor.parentNode.removeChild(editor)
+  // }
 
-  componentWillUnmount() {
-    const editor = document.getElementById("editor"); // deleteObject(simplemde)    
-
-    editor.parentNode.removeChild(editor);
-  }
 
   render() {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -372,7 +402,7 @@ class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       className: "form",
       onSubmit: this.handleSubmit
     }, Object.keys(this.state.model).filter(key => key !== "id" && key !== "createdAt" && key !== "updatedAt").map((field, index) => {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
+      return field !== "content" && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
         id: field === 'content' ? 'content' : '',
         key: index,
         name: field,
@@ -382,7 +412,15 @@ class PostForm extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
       });
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
       type: "submit"
-    }, "Submit")));
+    }, "Submit")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+      onSubmit: this.addFile
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Content File:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      type: "file",
+      name: "file",
+      id: "customFile"
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      type: "submit"
+    }, "Add File")));
   }
 
 }
@@ -799,7 +837,19 @@ const deletePost = postId => {
       console.log(error);
     }
   };
-};
+}; // export const addFile = (file) => {
+//     return async function(dispatch) {
+//         try {
+//             const { data } = await axios.post('/api/uploads/post', file, {
+//                 headers: 'content'
+//             })
+//             dispatch(addedFile(data))
+//         } catch (error) {
+//             console.log(error)
+//         }
+//     }
+// }
+
 const newPost = post => {
   return async function (dispatch) {
     try {
